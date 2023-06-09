@@ -5,55 +5,61 @@ import {
   Text,
   View,
   TextInput,
-  Platform,
+  Keyboard,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 const RegistrationScreen = () => {
-  console.log(Platform.OS);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../assets/images/bg.jpg")}
-        style={styles.image}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
+    <TouchableWithoutFeedback onPress={keyboardHide}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../assets/images/bg.jpg")}
+          style={styles.image}
         >
-          <View style={styles.formWrap}>
-            <Text style={styles.formTitle}>Register</Text>
+          <View
+            style={{
+              ...styles.formWrap,
+              paddingBottom: isShowKeyboard ? 0 : 45,
+            }}
+          >
+            <Text style={styles.formTitle}>Реєстрація</Text>
             <View style={styles.form}>
-              <View style={{ marginBottom: isShowKeyboard ? 10 : 0, gap: 16 }}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Login"
-                  onFocus={() => setIsShowKeyboard(true)}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Email"
-                  onFocus={() => setIsShowKeyboard(true)}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onFocus={() => setIsShowKeyboard(true)}
-                />
-              </View>
+              <TextInput
+                style={styles.input}
+                placeholder="Логін"
+                onFocus={() => setIsShowKeyboard(true)}
+              />
+              <TextInput
+                style={{ ...styles.input, marginTop: 16 }}
+                placeholder="Адреса електронної пошти"
+                onFocus={() => setIsShowKeyboard(true)}
+              />
+              <TextInput
+                style={{ ...styles.input, marginTop: 16 }}
+                placeholder="Пароль"
+                secureTextEntry={true}
+                onFocus={() => setIsShowKeyboard(true)}
+              />
               <TouchableOpacity style={styles.btn}>
-                <Text style={styles.btnTitle}>Register</Text>
+                <Text style={styles.btnTitle} onPress={keyboardHide}>
+                  Зареєстуватися
+                </Text>
               </TouchableOpacity>
-              <Text style={styles.text}>Already have an account? Login</Text>
+              <Text style={styles.text}>Вже є акаунт? Увійти</Text>
             </View>
           </View>
-        </KeyboardAvoidingView>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -68,14 +74,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   formWrap: {
-    flex: 1,
     backgroundColor: "#FFFFFF",
     paddingTop: 92,
-    paddingBottom: 45,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
   formTitle: {
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     fontWeight: 500,
     lineHeight: 35,
@@ -93,8 +98,12 @@ const styles = StyleSheet.create({
     borderColor: "#E8E8E8",
     borderWidth: 1,
     borderRadius: 8,
-    color: "#BDBDBD",
     paddingHorizontal: 15,
+
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#212121",
   },
   btn: {
     height: 50,
@@ -105,14 +114,18 @@ const styles = StyleSheet.create({
     marginTop: 43,
   },
   btnTitle: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
     color: "#FFFFFF",
   },
   text: {
-    color: "#1B4371",
+    marginTop: 16,
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
+    color: "#1B4371",
     textAlign: "center",
-    marginTop: 16,
   },
 });
 
