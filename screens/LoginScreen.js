@@ -10,12 +10,19 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 
+const initialState = {
+  email: "",
+  password: "",
+};
+
 const LoginScreen = () => {
+  const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+    console.log(state);
   };
 
   return (
@@ -37,12 +44,16 @@ const LoginScreen = () => {
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
                 onFocus={() => setIsShowKeyboard(true)}
+                onChangeText={(value) => setState({ ...state, email: value })}
               />
               <TextInput
                 style={{ ...styles.input, marginTop: 16 }}
                 placeholder="Пароль"
                 secureTextEntry={true}
                 onFocus={() => setIsShowKeyboard(true)}
+                onChangeText={(value) =>
+                  setState({ ...state, password: value })
+                }
               />
               <TouchableOpacity style={styles.btn}>
                 <Text style={styles.btnTitle} onPress={keyboardHide}>
