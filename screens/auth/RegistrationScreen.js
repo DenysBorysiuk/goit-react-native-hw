@@ -16,21 +16,20 @@ const initialState = {
   password: "",
 };
 
-const RegistrationScreen = () => {
+const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
-    console.log(state);
   };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <ImageBackground
-          source={require("../assets/images/bg.jpg")}
+          source={require("../../assets/images/bg.jpg")}
           style={styles.image}
         >
           <View
@@ -63,11 +62,19 @@ const RegistrationScreen = () => {
                 }
               />
               <TouchableOpacity style={styles.btn}>
-                <Text style={styles.btnTitle} onPress={keyboardHide}>
+                <Text
+                  style={styles.btnTitle}
+                  onPress={() => navigation.navigate("Home")}
+                >
                   Зареєстуватися
                 </Text>
               </TouchableOpacity>
-              <Text style={styles.text}>Вже є акаунт? Увійти</Text>
+              <View style={styles.wrapper}>
+                <Text style={styles.text}>Вже є акаунт?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                  <Text style={styles.link}>Увійти</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ImageBackground>
@@ -132,13 +139,24 @@ const styles = StyleSheet.create({
     lineHeight: 19,
     color: "#FFFFFF",
   },
-  text: {
+  wrapper: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 5,
     marginTop: 16,
+  },
+  text: {
     fontFamily: "Roboto-Regular",
     fontSize: 16,
     lineHeight: 19,
     color: "#1B4371",
-    textAlign: "center",
+  },
+  link: {
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
+    lineHeight: 19,
+    color: "#1B4371",
+    textDecorationLine: "underline",
   },
 });
 
