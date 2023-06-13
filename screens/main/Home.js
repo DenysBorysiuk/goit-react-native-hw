@@ -1,6 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import PostsScreen from "./PostsScreen";
@@ -12,7 +13,7 @@ const Home = ({ navigation }) => {
 
   return (
     <MainTab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={() => ({
         tabBarShowLabel: false,
         tabBarStyle: { height: 58 },
         tabBarInactiveTintColor: "rgba(33, 33, 33, 0.8)",
@@ -23,20 +24,14 @@ const Home = ({ navigation }) => {
         name="Posts"
         component={PostsScreen}
         options={({ route }) => ({
-          headerTitle: "Публікації",
-          headerTitleAlign: "center",
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 15 }}
-              onPress={() => navigation.navigate("Registration")}
-            >
-              <Ionicons
-                name="ios-log-out-outline"
-                size={24}
-                color="rgba(33, 33, 33, 0.8)"
-              />
-            </TouchableOpacity>
-          ),
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+            if (routeName === "Comments" || routeName === "Map") {
+              return { display: "none" };
+            }
+            return;
+          })(route),
+          headerShown: false,
           tabBarIcon: ({ focused, color }) => (
             <TouchableOpacity
               style={
@@ -54,7 +49,7 @@ const Home = ({ navigation }) => {
       <MainTab.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
-        options={({ route }) => ({
+        options={() => ({
           tabBarStyle: { display: "none" },
           headerTitle: "Створити публікацію",
           headerTitleAlign: "center",
@@ -70,7 +65,7 @@ const Home = ({ navigation }) => {
               />
             </TouchableOpacity>
           ),
-          tabBarIcon: ({ focused, color }) => (
+          tabBarIcon: ({ color }) => (
             <TouchableOpacity
               onPress={() => navigation.navigate("CreatePosts")}
             >
@@ -82,7 +77,7 @@ const Home = ({ navigation }) => {
       <MainTab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={({ route }) => ({
+        options={() => ({
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (
             <TouchableOpacity
