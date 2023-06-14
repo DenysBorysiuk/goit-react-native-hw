@@ -7,15 +7,29 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import { useSelector } from "react-redux";
 
-const DefaultPostsScreen = ({ route, navigation }) => {
+import { db } from "../../firebase/config";
+import { onSnapshot, collection, query, orderBy } from "firebase/firestore";
+
+const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const { avatar, login, email, userId } = useSelector((state) => state.auth);
+
+  const getAllPosts = async () => {
+    const postsQuery = query(
+      collection(db, "posts"),
+      orderBy("createdDate", "desc")
+    );
+
+    onSnapshot(postsQuery, (data) => {
+      setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+  };
 
   useEffect(() => {
-    if (route.params) {
-      setPosts((prev) => [...prev, route.params]);
-    }
-  }, [route.params]);
+    getAllPosts();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -33,11 +47,22 @@ const DefaultPostsScreen = ({ route, navigation }) => {
               source={{ uri: item.photo }}
               style={{ height: 240, borderRadius: 8 }}
             />
-            <View style={{ marginTop: 16 }}>
-              <TouchableOpacity onPress={() => navigation.navigate("Comments")}>
+            <View style={{ marginTop: 8 }}>
+              <Text>{item.titlePhoto}</Text>
+            </View>
+            <View style={{ marginTop: 8, flexDirection: "row", gap: 30 }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Comments", { postId: item.id })
+                }
+              >
                 <Text>Comments</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("Map")}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("Map", { location: item.location })
+                }
+              >
                 <Text>Map</Text>
               </TouchableOpacity>
             </View>

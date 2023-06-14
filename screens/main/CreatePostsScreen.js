@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -22,6 +23,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   const [titlePhoto, setTitlePhoto] = useState("");
   const [place, setPlace] = useState("");
+  const { userId, login, avatar } = useSelector((state) => state.auth);
 
   useEffect(() => {
     (async () => {
@@ -50,10 +52,12 @@ const CreatePostsScreen = ({ navigation }) => {
   };
 
   const deletePhoto = () => {
-    setPhoto("");
-    setTitlePhoto("");
-    setLocation("");
-    setPlace("");
+    if (photo) {
+      setPhoto("");
+      setTitlePhoto("");
+      setLocation("");
+      setPlace("");
+    }
   };
 
   const uploadPhotoToServer = async () => {
@@ -67,26 +71,31 @@ const CreatePostsScreen = ({ navigation }) => {
     return processedPhoto;
   };
 
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    const createdDate = Date.now();
+
+    await addDoc(collection(db, `posts`), {
+      photo,
+      titlePhoto,
+      location: location.coords,
+      place,
+      userId,
+      login,
+      avatar,
+      createdDate,
+      // likes: 0,
+    });
+  };
+
   const sendPost = () => {
-    uploadPhotoToServer();
-    navigation.navigate("DefaultPosts", { photo });
-    setTitlePhoto("");
-    setLocation("");
-    setPlace("");
-    // if (titlePhoto && location && place) {
-    // const post = {
-    //   id: Date.now().toString(),
-    //   img: titlePhoto,
-    //   title: location,
-    //   place: place,
-    //   date: new Date().toLocaleDateString(),
-    // };
-    // dispatch(addPost(post));
-    // setPhoto("");
-    // console.log(post);
-    // } else {
-    //   console.log("Заповніть всі поля");
-    // }
+    if (photo) {
+      uploadPostToServer();
+      navigation.navigate("DefaultPosts");
+      setTitlePhoto("");
+      setLocation("");
+      setPlace("");
+    }
   };
 
   if (hasPermission === null) {

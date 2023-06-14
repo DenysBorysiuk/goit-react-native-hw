@@ -15,7 +15,7 @@ const Home = ({ navigation }) => {
     <MainTab.Navigator
       screenOptions={() => ({
         tabBarShowLabel: false,
-        tabBarStyle: { height: 58 },
+        tabBarStyle: { height: 60 },
         tabBarInactiveTintColor: "rgba(33, 33, 33, 0.8)",
         tabBarActiveTintColor: "#FFFFFF",
       })}
@@ -29,7 +29,7 @@ const Home = ({ navigation }) => {
             if (routeName === "Comments" || routeName === "Map") {
               return { display: "none" };
             }
-            return;
+            return { height: 60 };
           })(route),
           headerShown: false,
           tabBarIcon: ({ focused, color }) => (
