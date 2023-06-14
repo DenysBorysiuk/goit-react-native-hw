@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/operations";
 
 const initialState = {
   login: "",
@@ -19,10 +21,18 @@ const initialState = {
 const RegistrationScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+  };
+
+  const onSubmit = async () => {
+    keyboardHide();
+    setState(initialState);
+    // const photo = await uploadPhotoToServer();
+    dispatch(authSignUpUser(state));
   };
 
   return (
@@ -44,12 +54,14 @@ const RegistrationScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Логін"
                 onFocus={() => setIsShowKeyboard(true)}
+                value={state.login}
                 onChangeText={(value) => setState({ ...state, login: value })}
               />
               <TextInput
                 style={{ ...styles.input, marginTop: 16 }}
                 placeholder="Адреса електронної пошти"
                 onFocus={() => setIsShowKeyboard(true)}
+                value={state.email}
                 onChangeText={(value) => setState({ ...state, email: value })}
               />
               <TextInput
@@ -57,15 +69,13 @@ const RegistrationScreen = ({ navigation }) => {
                 placeholder="Пароль"
                 secureTextEntry={true}
                 onFocus={() => setIsShowKeyboard(true)}
+                value={state.password}
                 onChangeText={(value) =>
                   setState({ ...state, password: value })
                 }
               />
               <TouchableOpacity style={styles.btn}>
-                <Text
-                  style={styles.btnTitle}
-                  onPress={() => navigation.navigate("Home")}
-                >
+                <Text style={styles.btnTitle} onPress={onSubmit}>
                   Зареєстуватися
                 </Text>
               </TouchableOpacity>

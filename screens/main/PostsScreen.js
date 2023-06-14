@@ -5,10 +5,14 @@ import DefaultPostsScreen from "../nested/DefaultScreenPosts";
 import CommentsScreen from "../nested/CommentsScreen";
 import MapScreen from "../nested/MapScreen";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/operations";
 
 const nestedStack = createStackNavigator();
 
 const PostsScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+
   return (
     <nestedStack.Navigator>
       <nestedStack.Screen
@@ -21,7 +25,7 @@ const PostsScreen = ({ navigation }) => {
           headerRight: () => (
             <TouchableOpacity
               style={{ marginRight: 15 }}
-              onPress={() => navigation.navigate("Registration")}
+              onPress={() => dispatch(authSignOutUser())}
             >
               <Ionicons
                 name="ios-log-out-outline"

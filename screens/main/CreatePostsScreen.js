@@ -11,6 +11,9 @@ import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Ionicons, Feather } from "@expo/vector-icons";
+import { db, storage } from "../../firebase/config";
+import { uploadBytes, ref, getDownloadURL } from "firebase/storage";
+import { addDoc, collection } from "firebase/firestore";
 
 const CreatePostsScreen = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -44,7 +47,6 @@ const CreatePostsScreen = ({ navigation }) => {
     await MediaLibrary.createAssetAsync(photo.uri);
     setPhoto(photo.uri);
     setLocation(location);
-    // console.log(location);
   };
 
   const deletePhoto = () => {
@@ -54,7 +56,23 @@ const CreatePostsScreen = ({ navigation }) => {
     setPlace("");
   };
 
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    const imageRef = ref(storage, `postImage/${uniquePostId}`);
+    await uploadBytes(imageRef, file);
+    const processedPhoto = await getDownloadURL(imageRef);
+
+    return processedPhoto;
+  };
+
   const sendPost = () => {
+    uploadPhotoToServer();
+    navigation.navigate("DefaultPosts", { photo });
+    setTitlePhoto("");
+    setLocation("");
+    setPlace("");
     // if (titlePhoto && location && place) {
     // const post = {
     //   id: Date.now().toString(),
@@ -64,11 +82,7 @@ const CreatePostsScreen = ({ navigation }) => {
     //   date: new Date().toLocaleDateString(),
     // };
     // dispatch(addPost(post));
-    setTitlePhoto("");
-    setLocation("");
-    setPlace("");
     // setPhoto("");
-    navigation.navigate("DefaultPosts", { photo });
     // console.log(post);
     // } else {
     //   console.log("Заповніть всі поля");

@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/operations";
 
 const initialState = {
   email: "",
@@ -18,10 +20,18 @@ const initialState = {
 const LoginScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const dispatch = useDispatch();
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
+  };
+
+  const onSubmit = async () => {
+    keyboardHide();
+    setState(initialState);
+    // const photo = await uploadPhotoToServer();
+    dispatch(authSignInUser(state));
   };
 
   return (
@@ -43,6 +53,7 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
                 onFocus={() => setIsShowKeyboard(true)}
+                value={state.email}
                 onChangeText={(value) => setState({ ...state, email: value })}
               />
               <TextInput
@@ -50,15 +61,13 @@ const LoginScreen = ({ navigation }) => {
                 placeholder="Пароль"
                 secureTextEntry={true}
                 onFocus={() => setIsShowKeyboard(true)}
+                value={state.password}
                 onChangeText={(value) =>
                   setState({ ...state, password: value })
                 }
               />
               <TouchableOpacity style={styles.btn}>
-                <Text
-                  style={styles.btnTitle}
-                  onPress={() => navigation.navigate("Home")}
-                >
+                <Text style={styles.btnTitle} onPress={onSubmit}>
                   Увійти
                 </Text>
               </TouchableOpacity>
